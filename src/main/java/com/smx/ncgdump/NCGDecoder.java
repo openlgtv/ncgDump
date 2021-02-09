@@ -106,7 +106,6 @@ public class NCGDecoder {
 		int length = buf.remaining();
 		
 		int last_offset = 0;
-		int last_size = 0;
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(length);
 		
