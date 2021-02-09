@@ -79,14 +79,14 @@ public class NCGDecoder {
 			}
 			
 			// xor data with keys
-			for(int i=0; i<512;){
+			for(int i=0; i<480;){
 				for(byte k : keys){
 					blockData[i++] ^= k;
 				}
 			}
 			
 			// decrypt keys
-			Crypto.aesDecrypt(keys, aes_key, aes_iv);
+			keys = Crypto.aesDecrypt(keys, aes_key, aes_iv);
 			
 			// repeat with decrypted offsets
 			offsets.rewind();
@@ -95,7 +95,8 @@ public class NCGDecoder {
 				blockData[offset + index] = keys[i];
 			}
 		} else {
-			Crypto.aesDecrypt(blockData, aes_key, aes_iv);
+			byte[] decrypted = Crypto.aesDecrypt(blockData, aes_key, aes_iv);
+			System.arraycopy(decrypted, 0, blockData, 0, decrypted.length);
 		}
 	}
 	
@@ -124,7 +125,7 @@ public class NCGDecoder {
 		}
 		
 		if(length > 0){
-			byte[] block = new byte[last_size];
+			byte[] block = new byte[length];
 			buf.position(last_offset).get(block);
 			decryptBlock(block);
 			baos.write(block);
